@@ -369,6 +369,12 @@ describe CASino::SessionsController do
             ticket_granting_ticket.reload.should_not be_awaiting_two_factor_authentication
           end
 
+          it 'creates an httponly cookie' do
+            controller.stub(:cookies).and_return(HashWithIndifferentAccess.new)
+            post :validate_otp, request_options
+            controller.cookies['tgt']['httponly'].should be(true)
+          end
+
           context 'with a long-term ticket-granting ticket' do
             let(:cookie_jar) { HashWithIndifferentAccess.new }
 
